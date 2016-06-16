@@ -9,23 +9,13 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.justfortom.mylife.MainActivity"
-    tools:showIn="@layout/activity_main">
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Make Your Phone Useful Again"
-        android:id="@+id/MyLife"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+    tools:context="com.justfortom.mylife.AddNewEvent"
+    tools:showIn="@layout/activity_add_new_event">
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/mainMenuOptions"
-        android:layout_below="@+id/MyLife"
+        android:id="@+id/lvwEventTypes"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>
