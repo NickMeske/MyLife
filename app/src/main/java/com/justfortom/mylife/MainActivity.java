@@ -1,6 +1,7 @@
 package com.justfortom.mylife;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,11 +11,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    public Database db;
+    public static Database db;
     private Starter starterThing;
 
     @Override
@@ -24,8 +25,10 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //initialize database
+        db = new Database(getApplicationContext());
+        db.CreateSchema();
         starterThing = new Starter();
-
     }
 
     @Override
@@ -58,22 +61,5 @@ public class MainActivity extends AppCompatActivity {
         starterThing.StopListening();
     }
 
-    public void CreateTable(View view) {
-        try {
 
-//            ArrayList<DatabaseColumn> newColumns = new ArrayList<>();
-//            newColumns.add(new DatabaseColumn("ID", DATABASE_COLUMN_TYPE.INTEGER, true));
-//            newColumns.add(new DatabaseColumn("Test", DATABASE_COLUMN_TYPE.BLOB, false));
-
-            db = new Database(getApplicationContext());
-            db.RemoveTable("TestTable");
-
-            //db.CreateTable("TestTable", newColumns);
-
-        } catch (Exception ex) {
-            Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-
-    }
 }

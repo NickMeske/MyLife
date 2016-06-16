@@ -12,31 +12,5 @@
     tools:context="com.justfortom.mylife.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Listening"
-        android:id="@+id/btnStart"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="200dp"
-        android:onClick="Start" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop Listening"
-        android:id="@+id/btnStop"
-        android:layout_alignBottom="@+id/btnStart"
-        android:layout_alignParentEnd="true"
-        android:onClick="Stop" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="CreateTable"
-        android:id="@+id/createTable"
-        android:layout_below="@+id/btnStart"
-        android:layout_toStartOf="@+id/btnStop"
-        android:onClick="CreateTable" />
 </RelativeLayout>
