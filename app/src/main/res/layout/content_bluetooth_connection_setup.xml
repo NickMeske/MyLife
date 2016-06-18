@@ -9,23 +9,24 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.justfortom.mylife.AddNewEvent"
-    tools:showIn="@layout/activity_add_new_event">
+    tools:context="com.justfortom.mylife.BluetoothConnectionSetup"
+    tools:showIn="@layout/activity_bluetooth_connection_setup">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <EditText
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Select an event to watch for:"
-        android:id="@+id/textAddEvent"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/editBlueoothEventName"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:textAlignment="center"
+        android:hint="Name of this Event" />
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/lvwEventTypes"
-        android:layout_below="@id/textAddEvent"
-        android:layout_centerHorizontal="true" />
-
+        android:id="@+id/listBluetoothDevices"
+        android:layout_below="@+id/editBlueoothEventName"
+        android:layout_centerHorizontal="true"
+        android:choiceMode="multipleChoice"
+        android:clickable="true" />
 </RelativeLayout>

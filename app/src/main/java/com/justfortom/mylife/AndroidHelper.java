@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +19,11 @@ public class AndroidHelper {
     public static void AddItemsToList(Context context, ListView listView, List<String> items) {
         ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, items);
         listView.setAdapter(listAdapter);
+    }
+
+    public static void AddItemsToCheckboxList(Context context, ListView listView, List<String> items) {
+        ArrayAdapter<String> listAdadpter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_checked, items);
+        listView.setAdapter(listAdadpter);
     }
 
 }

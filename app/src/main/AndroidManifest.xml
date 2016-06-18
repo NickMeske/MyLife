@@ -30,14 +30,22 @@
                 android:value="com.justfortom.mylife.MainActivity" />
         </activity>
         <activity
-            android:name=".EventSetup"
-            android:label="@string/title_activity_event_setup"
+            android:name=".LocationEventSetup"
+            android:label="@string/title_activity_location_event_setup"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.justfortom.mylife.MainActivity" />
-
+        </activity>
+        <activity
+            android:name=".BluetoothConnectionSetup"
+            android:label="@string/title_activity_bluetooth_connection_setup"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.justfortom.mylife.MainActivity" />
         </activity>
     </application>
 

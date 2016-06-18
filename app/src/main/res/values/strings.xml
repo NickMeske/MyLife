@@ -3,4 +3,12 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_add_new_event">AddNewEvent</string>
     <string name="title_activity_event_setup">EventSetup</string>
+    <string name="main_menu_item_add_new_event">Add Event to Watch</string>
+    <string name="main_menu_item_reset_events">Reset All Events</string>
+    <string name="main_menu_item_rate_app">Rate this App</string>
+    <string name="event_type_bluetooth">Connection to a bluetooth item</string>
+    <string name="event_type_location_enter">Enter a specific location</string>
+    <string name="extra_event_type">EVENT_TYPE</string>
+    <string name="title_activity_bluetooth_connection_setup">BluetoothConnectionSetup</string>
+    <string name="title_activity_location_event_setup">LocationEventSetup</string>
 </resources>

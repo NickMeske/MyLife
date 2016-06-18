@@ -23,19 +23,11 @@ public class AddNewEvent extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ArrayList<String> eventTypes = new ArrayList<>();
-        eventTypes.add("New Location Change Event");
-        eventTypes.add("New Bluetooth Connection Event");
+        eventTypes.add(getString(R.string.event_type_bluetooth));
+        eventTypes.add(getString(R.string.event_type_location_enter));
 
         final ListView lvw = (ListView) findViewById(R.id.lvwEventTypes);
         AndroidHelper.AddItemsToList(this, lvw, eventTypes);
@@ -45,13 +37,13 @@ public class AddNewEvent extends AppCompatActivity {
                                     long id) {
                 String entry = lvw.getItemAtPosition(position).toString();
 
-                if (entry.contains("Bluetooth")) {
-                    Intent intent = new Intent(getApplicationContext(), EventSetup.class);
-                    intent.putExtra("EVENT_TYPE", "BLUETOOTH");
+                if (entry.equals(getString(R.string.event_type_bluetooth))) {
+                    Intent intent = new Intent(getApplicationContext(), BluetoothConnectionSetup.class);
+                    intent.putExtra(getString(R.string.extra_event_type), getString(R.string.event_type_bluetooth));
                     startActivity(intent);
-                } else if (entry.contains("Location")) {
-                    Intent intent = new Intent(getApplicationContext(), EventSetup.class);
-                    intent.putExtra("EVENT_TYPE", "LOCATION");
+                } else if (entry.equals(getString(R.string.event_type_location_enter))) {
+                    Intent intent = new Intent(getApplicationContext(), LocationEventSetup.class);
+                    intent.putExtra(getString(R.string.extra_event_type), getString(R.string.event_type_location_enter));
                     startActivity(intent);
                 }
             }

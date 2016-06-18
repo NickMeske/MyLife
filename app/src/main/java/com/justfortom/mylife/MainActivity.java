@@ -42,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
         //add options to home screen
         ArrayList<String> options = new ArrayList<>();
-        options.add("Add Events To Watch");
-        options.add("Reset all Events");
-        options.add("Rate this App");
+        options.add(getString(R.string.main_menu_item_add_new_event));
+        options.add(getString(R.string.main_menu_item_reset_events));
+        options.add(getString(R.string.main_menu_item_rate_app));
 
         final ListView myList = (ListView) findViewById(R.id.mainMenuOptions);
         AndroidHelper.AddItemsToList(this, myList, options);
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                                     long id) {
                 String entry = myList.getItemAtPosition(position).toString();
 
-                if (entry.equals("Add Events To Watch")) {
+                if (entry.equals(getString(R.string.main_menu_item_add_new_event))) {
                     Intent intent = new Intent(getApplicationContext(), AddNewEvent.class);
                     startActivity(intent);
                 }
