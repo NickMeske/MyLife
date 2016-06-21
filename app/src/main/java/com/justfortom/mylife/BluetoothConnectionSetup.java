@@ -17,6 +17,7 @@ public class BluetoothConnectionSetup extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth_connection_setup);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -25,9 +26,15 @@ public class BluetoothConnectionSetup extends AppCompatActivity {
         try {
             BluetoothHelper myBluetooth = new BluetoothHelper();
             ListView bluetoothItems = (ListView) findViewById(R.id.listBluetoothDevices);
-            AndroidHelper.AddItemsToCheckboxList(this, bluetoothItems, myBluetooth.GetDevices());
+            List<String> items = myBluetooth.GetDevices();
+
+            if (items.isEmpty()) {
+                throw new Exception("Could not find bluetooth devices. Be sure your device supports bluetooth and to have bluetooth enabled.");
+            }
+
+            AndroidHelper.AddItemsToCheckboxList(this, bluetoothItems, items);
         } catch (Exception ex) {
-            Snackbar.make(this.findViewById(R.id.listBluetoothDevices), "Unable to retrieve list of Bluetooth Devices", Snackbar.LENGTH_INDEFINITE).show();
+            Snackbar.make(this.findViewById(R.id.listBluetoothDevices), ex.getMessage(), Snackbar.LENGTH_INDEFINITE).show();
             //Toast.makeText(BluetoothConnectionSetup.this, "Unable to retrieve list of bluetooth devices", Toast.LENGTH_SHORT).show();
         }
 

@@ -5,9 +5,11 @@ import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.provider.SyncStateContract;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,8 +21,12 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -36,8 +42,27 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //initialize database
-        db = new Database(getApplicationContext());
-        db.CreateSchema();
+        try {
+            db = new Database(getApplicationContext());
+            db.CreateSchema();
+        } catch (Exception ex) {
+            Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+
+        final List<String> ids1 = new ArrayList<>();
+        ids1.add("test1");
+        ids1.add("anothertest");
+
+        try {
+            //Event newEvent = new Event(db, "TestEventName", new Date(),new Date(),  ids1, ids1);
+            //System.out.print(newEvent.eventName);
+        } catch (Exception ex) {
+            String exc = ex.getMessage();
+            Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+
 //        starterThing = new Starter();
 
         //add options to home screen
@@ -58,8 +83,23 @@ public class MainActivity extends AppCompatActivity {
                 if (entry.equals(getString(R.string.main_menu_item_add_new_event))) {
                     Intent intent = new Intent(getApplicationContext(), AddNewEvent.class);
                     startActivity(intent);
-                }
+                } else if (entry.equals(getString(R.string.main_menu_item_rate_app))) {
+                    try {
+                        Event myEvent = Event.FindAll("testEventName", db).get(0);
+                        Toast.makeText(MainActivity.this, myEvent.eventName, Toast.LENGTH_SHORT).show();
+                    } catch (Exception ex) {
+                        Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else if (entry.equals(getString(R.string.main_menu_item_reset_events))) {
 
+                    try {
+                        Event newEvent = new Event(db, "testEventName", new Date(), new Date(), ids1, ids1);
+                    } catch (Exception ex) {
+                        Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+
+//                    db.DeleteAll(Database.TABLE_NAME.EVENTS);
+                }
                 Toast.makeText(MainActivity.this, entry, Toast.LENGTH_SHORT).show();
             }
         });

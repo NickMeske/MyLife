@@ -29,7 +29,7 @@ public class AddNewEvent extends AppCompatActivity {
         eventTypes.add(getString(R.string.event_type_bluetooth));
         eventTypes.add(getString(R.string.event_type_location_enter));
 
-        final ListView lvw = (ListView) findViewById(R.id.lvwEventTypes);
+        final ListView lvw = (ListView) findViewById(R.id.lvwExistingEvents);
         AndroidHelper.AddItemsToList(this, lvw, eventTypes);
         lvw.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

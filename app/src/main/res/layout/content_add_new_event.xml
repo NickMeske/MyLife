@@ -12,20 +12,36 @@
     tools:context="com.justfortom.mylife.AddNewEvent"
     tools:showIn="@layout/activity_add_new_event">
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add New Event"
+        android:id="@+id/btnAddNewEvent" />
+
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_below="@id/btnAddNewEvent"
+        android:id="@+id/spacer1" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Select an event to watch for:"
+        android:text="Select an existing event to edit:"
         android:id="@+id/textAddEvent"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/spacer1" />
 
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/lvwEventTypes"
+        android:id="@+id/lvwExistingEvents"
         android:layout_below="@id/textAddEvent"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:fastScrollEnabled="false" />
+
 
 </RelativeLayout>

@@ -12,21 +12,21 @@
     tools:context="com.justfortom.mylife.BluetoothConnectionSetup"
     tools:showIn="@layout/activity_bluetooth_connection_setup">
 
-    <EditText
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editBlueoothEventName"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
         android:textAlignment="center"
-        android:hint="Name of this Event" />
+        android:text="Select the devices which apply to this event:"
+        android:id="@+id/txtBluetoothDevices" />
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listBluetoothDevices"
-        android:layout_below="@+id/editBlueoothEventName"
+        android:layout_below="@+id/txtBluetoothDevices"
         android:layout_centerHorizontal="true"
         android:choiceMode="multipleChoice"
         android:clickable="true" />
+
+
 </RelativeLayout>
