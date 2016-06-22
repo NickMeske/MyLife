@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AddNewEvent extends AppCompatActivity {
 
@@ -25,30 +27,25 @@ public class AddNewEvent extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ArrayList<String> eventTypes = new ArrayList<>();
-        eventTypes.add(getString(R.string.event_type_bluetooth));
-        eventTypes.add(getString(R.string.event_type_location_enter));
-
-        final ListView lvw = (ListView) findViewById(R.id.lvwExistingEvents);
-        AndroidHelper.AddItemsToList(this, lvw, eventTypes);
-        lvw.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,
-                                    long id) {
-                String entry = lvw.getItemAtPosition(position).toString();
-
-                if (entry.equals(getString(R.string.event_type_bluetooth))) {
-                    Intent intent = new Intent(getApplicationContext(), BluetoothConnectionSetup.class);
-                    intent.putExtra(getString(R.string.extra_event_type), getString(R.string.event_type_bluetooth));
-                    startActivity(intent);
-                } else if (entry.equals(getString(R.string.event_type_location_enter))) {
-                    Intent intent = new Intent(getApplicationContext(), LocationEventSetup.class);
-                    intent.putExtra(getString(R.string.extra_event_type), getString(R.string.event_type_location_enter));
-                    startActivity(intent);
-                }
-            }
-        });
+        try {
+            ListExistingEvents();
+        } catch (Exception ex) {
+            Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG);
+        }
 
     }
 
+    private void ListExistingEvents() throws Exception {
+        Database myDB = new Database(getApplicationContext());
+        List<Event> events = Event.FindAll(myDB);
+        List<String> eventNames = new ArrayList<>();
+
+        for (Event event : events) {
+            eventNames.add(event.eventName);
+        }
+
+        ListView view = (ListView) findViewById(R.id.lvwExistingEvents);
+        AndroidHelper.AddItemsToCheckboxList(getApplicationContext(), view, eventNames);
+
+    }
 }

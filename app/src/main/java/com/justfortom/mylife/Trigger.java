@@ -26,7 +26,7 @@ public class Trigger {
         this.type = type;
         this.typeInfo = typeInfo;
 
-        this.ID = myDB.InsertTrigger(type, typeInfo);
+        this.ID = InsertTrigger(myDB, type, typeInfo);
     }
 
     public Trigger() {
@@ -34,7 +34,7 @@ public class Trigger {
     }
 
     public static Trigger Find(Database myDB, int id) throws Exception {
-        Cursor results = myDB.GetTrigger(id);
+        Cursor results = GetTrigger(myDB, id);
         if (results.getCount() == 0) {
             throw new Exception("Could not find any Triggers with that id");
         }
@@ -46,6 +46,18 @@ public class Trigger {
         tempTrigger.typeInfo = results.getString(2);
 
         return tempTrigger;
+    }
+
+    private int InsertTrigger(Database myDB, Trigger.TRIGGER_TYPE type, String typeInfo) {
+        int id = myDB.GetNextID(Database.TABLE_NAME.EVENT_TRIGGERS.name());
+        String sql = String.format("INSERT INTO %S VALUES (%d, '%s', '%s')", Database.TABLE_NAME.EVENT_TRIGGERS.name(), id, type.name(), typeInfo);
+        myDB.ExecuteSql(sql);
+        return id;
+    }
+
+    private static Cursor GetTrigger(Database myDB, int triggerID) {
+        String sql = String.format("SELECT * FROM %S WHERE %s == %d", Database.TABLE_NAME.EVENT_TRIGGERS.name(), Database.COLUMN.ID.name(), triggerID);
+        return myDB.Query(sql);
     }
 
 }
