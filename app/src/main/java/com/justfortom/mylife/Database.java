@@ -21,6 +21,25 @@ import java.util.ListIterator;
  * Created by nmesk on 6/14/2016.
  */
 public class Database {
+
+    public enum TABLE_NAME {
+        EVENTS,
+        EVENT_TRIGGERS,
+        RESULTING_ACTIONS
+    }
+
+    public enum COLUMN {
+        ID,
+        EVENTS_EVENT_NAME,
+        EVENTS_EVENT_TRIGGER_IDS,
+        EVENTS_RESULTING_ACTION_IDS,
+        EVENTS_START_TIME,
+        EVENTS_END_TIME,
+        RA_TYPE,
+        RA_ACTION,
+        TRIGGERS_TYPE,
+        TRIGGERS_INFO
+    }
     //database info
     public static final String DATABASE_NAME = "life.db";
     public static final int DATABASE_VERSION = 1;
@@ -45,7 +64,7 @@ public class Database {
         return false;
     }
 
-    public void RemoveTable(String tableName) {
+    private void RemoveTable(String tableName) {
         db = myHelper.getWritableDatabase();
 
         if (TableExists(tableName)) {
@@ -85,32 +104,10 @@ public class Database {
         db.execSQL(sqlExecute);
     }
 
-    public void InsertEvent(String eventName, Date startTime, Date endTime, List<String> resultingIDs, List<String> triggerIDs) {
-
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-        String start = format.format(startTime);
-        String end = format.format(endTime);
-
-        String sql = String.format("INSERT INTO %S VALUES (%d, '%S','%S','%S','%S','%S')",
-                TABLE_NAME.EVENTS.name(), GetNextID(TABLE_NAME.EVENTS.name()),
-                eventName, start, end, TextUtils.join("|",
-                        resultingIDs.toArray()), TextUtils.join("|", triggerIDs.toArray()));
-
-        db = myHelper.getWritableDatabase();
-        db.execSQL(sql);
-    }
-
     public void DeleteAll(TABLE_NAME tableName) {
         String sql = "Delete from " + tableName.name();
         db = myHelper.getWritableDatabase();
         db.execSQL(sql);
-    }
-
-    public Cursor GetEvent(String eventName) {
-        String sql = String.format("SELECT * FROM %S WHERE %S = '%S'", TABLE_NAME.EVENTS.name(), COLUMN.EVENTS_EVENT_NAME, eventName);
-        db = myHelper.getReadableDatabase();
-        Cursor results = db.rawQuery(sql, null);
-        return results;
     }
 
     private int GetNextID(String tableName) {
@@ -125,48 +122,6 @@ public class Database {
         return nextID;
     }
 
-
-//    public void InsertRow(String tableName, String[] columns, String[] values) {
-//        if (!TableExists(tableName)) {
-//            throw new IllegalArgumentException("Unable to find table: " + tableName);
-//        }
-//
-//        if (columns.length != values.length) {
-//            throw new IllegalArgumentException("The number of columns needs to equal the number of values.");
-//        }
-//
-//        db = myHelper.getWritableDatabase();
-//        ContentValues vals = new ContentValues();
-//
-//        for (int i = 0; i < columns.length; i++) {
-//            vals.put(columns[i], values[i]);
-//        }
-//
-//        String sql = String.format(
-//
-//
-//        db.insert(tableName, null, vals);
-//    }
-
-    public Cursor GetRows(String tableName, String[] columnsToReturn, String[] columnsForWhere, String[] valuesForWhere) {
-        db = myHelper.getReadableDatabase();
-        String columnsForWhereString = TextUtils.join(",", columnsForWhere);
-
-        // How you want the results sorted in the resulting Cursor
-        String sortOrder = COLUMN.ID + " DESC";
-
-        Cursor c = db.query(
-                tableName,  // The table to query
-                columnsToReturn,                          // The columns to return
-                columnsForWhereString,                    // The columns for the WHERE clause
-                valuesForWhere,                           // The values for the WHERE clause
-                null,                                     // don't group the rows
-                null,                                     // don't filter by row groups
-                sortOrder                                 // The sort order
-        );
-
-        return c;
-    }
 
     /**
      * Create initial schema on startup
@@ -199,23 +154,57 @@ public class Database {
 
     }
 
-    public enum TABLE_NAME {
-        EVENTS,
-        EVENT_TRIGGERS,
-        RESULTING_ACTIONS
+
+    public int InsertEvent(String eventName, Date startTime, Date endTime, List<String> resultingIDs, List<String> triggerIDs) {
+
+        int id = GetNextID(TABLE_NAME.EVENTS.name());
+        String start = AndroidHelper.DateFormat().format(startTime);
+        String end = AndroidHelper.DateFormat().format(endTime);
+
+        String sql = String.format("INSERT INTO %S VALUES (%d, '%s','%s','%s','%s','%s')",
+                TABLE_NAME.EVENTS.name(), id,
+                eventName, start, end, TextUtils.join("|",
+                        resultingIDs.toArray()), TextUtils.join("|", triggerIDs.toArray()));
+
+        db = myHelper.getWritableDatabase();
+        db.execSQL(sql);
+        return id;
     }
 
-    public enum COLUMN {
-        ID,
-        EVENTS_EVENT_NAME,
-        EVENTS_EVENT_TRIGGER_IDS,
-        EVENTS_RESULTING_ACTION_IDS,
-        EVENTS_START_TIME,
-        EVENTS_END_TIME,
-        RA_TYPE,
-        RA_ACTION,
-        TRIGGERS_TYPE,
-        TRIGGERS_INFO
+    public Cursor GetEvent(String eventName) {
+        String sql = String.format("SELECT * FROM %S WHERE %s = '%s'", TABLE_NAME.EVENTS.name(), COLUMN.EVENTS_EVENT_NAME, eventName);
+        db = myHelper.getReadableDatabase();
+        Cursor results = db.rawQuery(sql, null);
+        return results;
+    }
+
+    public int InsertTrigger(Trigger.TRIGGER_TYPE type, String typeInfo) {
+        int id = GetNextID(TABLE_NAME.EVENT_TRIGGERS.name());
+        String sql = String.format("INSERT INTO %S VALUES (%d, '%s', '%s')", TABLE_NAME.EVENT_TRIGGERS.name(), id, type.name(), typeInfo);
+        db = myHelper.getWritableDatabase();
+        db.execSQL(sql);
+
+        return id;
+    }
+
+    public Cursor GetTrigger(int triggerID) {
+        String sql = String.format("SELECT * FROM %S WHERE %s == %d", TABLE_NAME.EVENT_TRIGGERS.name(), COLUMN.ID.name(), triggerID);
+        db = myHelper.getReadableDatabase();
+        return db.rawQuery(sql, null);
+    }
+
+    public int InsertResultingAction(ResultingAction.RA_TYPE type, String typeInfo) {
+        int id = GetNextID(TABLE_NAME.RESULTING_ACTIONS.name());
+        String sql = String.format("INSERT INTO %S VALUES (%d, '%s', '%s')", TABLE_NAME.RESULTING_ACTIONS.name(), id, type.name(), typeInfo);
+        db = myHelper.getWritableDatabase();
+        db.execSQL(sql);
+        return id;
+    }
+
+    public Cursor GetResultingAction(int raID) {
+        String sql = String.format("SELECT * FROM %S WHERE %s == %d", TABLE_NAME.RESULTING_ACTIONS.name(), COLUMN.ID.name(), raID);
+        db = myHelper.getReadableDatabase();
+        return db.rawQuery(sql, null);
     }
 }
 

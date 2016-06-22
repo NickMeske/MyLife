@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,10 @@ public class AndroidHelper {
     public static void AddItemsToCheckboxList(Context context, ListView listView, List<String> items) {
         ArrayAdapter<String> listAdadpter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_checked, items);
         listView.setAdapter(listAdadpter);
+    }
+
+    public static SimpleDateFormat DateFormat() {
+        return new SimpleDateFormat("HH:mm");
     }
 
 }

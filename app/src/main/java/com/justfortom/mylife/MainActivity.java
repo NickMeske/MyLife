@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 } else if (entry.equals(getString(R.string.main_menu_item_rate_app))) {
                     try {
-                        Event myEvent = Event.FindAll("testEventName", db).get(0);
+                        Event myEvent = Event.Find("testEventName", db);
                         Toast.makeText(MainActivity.this, myEvent.eventName, Toast.LENGTH_SHORT).show();
                     } catch (Exception ex) {
                         Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_SHORT).show();
