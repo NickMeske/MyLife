@@ -163,10 +163,6 @@ public class Database {
         db = myHelper.getReadableDatabase();
         return db.rawQuery(sql, null);
     }
-
-
-
-
 }
 
 

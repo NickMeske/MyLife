@@ -16,7 +16,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add New Event"
-        android:id="@+id/btnAddNewEvent" />
+        android:id="@+id/btnAddNewEvent"
+        android:onClick="OpenEventSetup" />
 
 
     <Space
@@ -41,7 +42,8 @@
         android:id="@+id/lvwExistingEvents"
         android:layout_below="@id/textAddEvent"
         android:layout_centerHorizontal="true"
-        android:fastScrollEnabled="false" />
+        android:fastScrollEnabled="false"
+        style="@style/AppTheme" />
 
 
 </RelativeLayout>

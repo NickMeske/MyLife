@@ -44,8 +44,12 @@ public class AddNewEvent extends AppCompatActivity {
             eventNames.add(event.eventName);
         }
 
-        ListView view = (ListView) findViewById(R.id.lvwExistingEvents);
-        AndroidHelper.AddItemsToCheckboxList(getApplicationContext(), view, eventNames);
+        final ListView view = (ListView) findViewById(R.id.lvwExistingEvents);
+        AndroidHelper.AddItemsToList(AddNewEvent.this, view, eventNames);
+    }
 
+    private void OpenEventSetup(View view) {
+        Intent intent = new Intent(getApplicationContext(), EventSetup.class);
+        startActivity(intent);
     }
 }

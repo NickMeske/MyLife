@@ -92,13 +92,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } else if (entry.equals(getString(R.string.main_menu_item_reset_events))) {
 
-                    try {
-                        Event newEvent = new Event(db, "testEventName", new Date(), new Date(), ids1, ids1);
-                    } catch (Exception ex) {
-                        Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
-                    }
+//                    try {
+//                        Event newEvent = new Event(db, "testEventName", new Date(), new Date(), ids1, ids1);
+//                    } catch (Exception ex) {
+//                        Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+//                    }
 
-//                    db.DeleteAll(Database.TABLE_NAME.EVENTS);
+                    db.DeleteAll(Database.TABLE_NAME.EVENTS);
                 }
                 Toast.makeText(MainActivity.this, entry, Toast.LENGTH_SHORT).show();
             }

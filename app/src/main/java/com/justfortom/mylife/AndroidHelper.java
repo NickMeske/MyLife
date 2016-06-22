@@ -20,6 +20,7 @@ public class AndroidHelper {
     public static void AddItemsToList(Context context, ListView listView, List<String> items) {
         ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, items);
         listView.setAdapter(listAdapter);
+
     }
 
     public static void AddItemsToCheckboxList(Context context, ListView listView, List<String> items) {
