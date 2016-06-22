@@ -48,7 +48,7 @@ public class AddNewEvent extends AppCompatActivity {
         AndroidHelper.AddItemsToList(AddNewEvent.this, view, eventNames);
     }
 
-    private void OpenEventSetup(View view) {
+    public void OpenEventSetup(View view) {
         Intent intent = new Intent(getApplicationContext(), EventSetup.class);
         startActivity(intent);
     }
