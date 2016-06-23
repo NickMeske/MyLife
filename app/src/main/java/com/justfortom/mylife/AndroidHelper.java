@@ -32,4 +32,26 @@ public class AndroidHelper {
         return new SimpleDateFormat("HH:mm");
     }
 
+    public static void FillResultingActions(Database myDB, Context context, ListView listView, List<String> resultingActionIDs) {
+
+        //Can add more information here
+        List<String> raIDs = new ArrayList<>();
+        for (String resAction : resultingActionIDs) {
+            ResultingAction tempAction = ResultingAction.Find(myDB, resAction);
+            raIDs.add(String.valueOf(tempAction.ID));
+        }
+        AddItemsToList(context, listView, raIDs);
+    }
+
+    public static void FillTriggers(Database myDB, Context context, ListView listView, List<String> triggerIDs) {
+        //Can add more information here
+        List<String> raIDs = new ArrayList<>();
+        for (String trigger : raIDs) {
+            Trigger tempTrigger = Trigger.Find(myDB, trigger);
+
+            raIDs.add(String.valueOf(tempTrigger.ID));
+        }
+        AddItemsToList(context, listView, raIDs);
+    }
+
 }

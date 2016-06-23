@@ -1,7 +1,6 @@
 package com.justfortom.mylife;
 
 import android.content.Intent;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.provider.SyncStateContract;
@@ -21,12 +20,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -46,24 +40,10 @@ public class MainActivity extends AppCompatActivity {
             db = new Database(getApplicationContext());
             db.CreateSchema();
         } catch (Exception ex) {
-            Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+            //schema probably already exists
         }
 
-
-        final List<String> ids1 = new ArrayList<>();
-        ids1.add("test1");
-        ids1.add("anothertest");
-
-        try {
-            //Event newEvent = new Event(db, "TestEventName", new Date(),new Date(),  ids1, ids1);
-            //System.out.print(newEvent.eventName);
-        } catch (Exception ex) {
-            String exc = ex.getMessage();
-            Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-
-//        starterThing = new Starter();
+//        Event myEvent = new Event(db, )
 
         //add options to home screen
         ArrayList<String> options = new ArrayList<>();
@@ -84,19 +64,8 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), AddNewEvent.class);
                     startActivity(intent);
                 } else if (entry.equals(getString(R.string.main_menu_item_rate_app))) {
-                    try {
-                        Event myEvent = Event.Find("testEventName", db);
-                        Toast.makeText(MainActivity.this, myEvent.eventName, Toast.LENGTH_SHORT).show();
-                    } catch (Exception ex) {
-                        Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                } else if (entry.equals(getString(R.string.main_menu_item_reset_events))) {
 
-//                    try {
-//                        Event newEvent = new Event(db, "testEventName", new Date(), new Date(), ids1, ids1);
-//                    } catch (Exception ex) {
-//                        Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
-//                    }
+                } else if (entry.equals(getString(R.string.main_menu_item_reset_events))) {
 
                     db.DeleteAll(Database.TABLE_NAME.EVENTS);
                 }

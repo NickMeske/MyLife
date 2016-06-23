@@ -12,59 +12,88 @@
     tools:context="com.justfortom.mylife.EventSetup"
     tools:showIn="@layout/activity_event_setup">
 
-    <EditText
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/txtEventName"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:hint="Event Name"
-        android:textAlignment="center" />
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView">
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_below="@id/txtEventName"
-        android:layout_alignParentStart="true"
-        android:id="@+id/spacer2" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Things that trigger this event:"
-        android:id="@+id/textView1"
-        android:layout_below="@+id/spacer2"
-        android:layout_alignParentStart="true" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtEventName"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:hint="Event Name"
+                android:textAlignment="center" />
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:id="@+id/listTriggers"
-        android:layout_below="@+id/textView1"
-        android:layout_alignParentStart="true" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Things that trigger this event:"
+                android:id="@+id/textView1"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/txtEventName" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_below="@+id/listTriggers"
-        android:layout_alignParentStart="true"
-        android:id="@+id/spacer3" />
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:id="@+id/listTriggers"
+                android:layout_below="@+id/textView1"
+                android:layout_alignParentStart="true" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Things that happen when this event executes:"
-        android:id="@+id/textView2"
-        android:layout_below="@+id/spacer3"
-        android:layout_alignParentStart="true" />
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add New Trigger"
+                android:id="@+id/btnAddTrigger"
+                android:layout_below="@id/listTriggers" />
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:id="@+id/listResultingActions"
-        android:layout_below="@+id/textView2"
-        android:layout_alignParentStart="true" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_below="@+id/btnAddTrigger"
+                android:layout_alignParentStart="true"
+                android:id="@+id/spacer3" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Things that happen when this event executes:"
+                android:id="@+id/textView2"
+                android:layout_below="@+id/spacer3"
+                android:layout_alignParentStart="true" />
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:id="@+id/listResultingActions"
+                android:layout_below="@+id/textView2"
+                android:layout_alignParentStart="true" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add Resulting Action"
+                android:id="@+id/btnAddResultingAction"
+                android:layout_below="@id/listResultingActions" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save"
+                android:id="@+id/btnSaveEvent"
+                android:layout_below="@id/btnAddResultingAction"
+                android:onClick="SaveEvent" />
+
+        </RelativeLayout>
+    </ScrollView>
 
 </RelativeLayout>

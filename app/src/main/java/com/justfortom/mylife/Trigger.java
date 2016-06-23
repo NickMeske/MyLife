@@ -33,10 +33,10 @@ public class Trigger {
 
     }
 
-    public static Trigger Find(Database myDB, int id) throws Exception {
+    public static Trigger Find(Database myDB, String id) {
         Cursor results = GetTrigger(myDB, id);
         if (results.getCount() == 0) {
-            throw new Exception("Could not find any Triggers with that id");
+            throw new IllegalArgumentException("Could not find any Triggers with that id");
         }
 
         results.moveToFirst();
@@ -55,9 +55,14 @@ public class Trigger {
         return id;
     }
 
-    private static Cursor GetTrigger(Database myDB, int triggerID) {
+    private static Cursor GetTrigger(Database myDB, String triggerID) {
         String sql = String.format("SELECT * FROM %S WHERE %s == %d", Database.TABLE_NAME.EVENT_TRIGGERS.name(), Database.COLUMN.ID.name(), triggerID);
         return myDB.Query(sql);
+    }
+
+    public void Remove(Database myDB) {
+        String sql = String.format("DELETE FROM %S WHERE %s == %d", Database.TABLE_NAME.EVENT_TRIGGERS.name(), Database.COLUMN.ID.name(), this.ID);
+        myDB.ExecuteSql(sql);
     }
 
 }

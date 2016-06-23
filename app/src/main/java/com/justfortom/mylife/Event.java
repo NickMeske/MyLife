@@ -1,8 +1,10 @@
 package com.justfortom.mylife;
 
 import android.database.Cursor;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -11,7 +13,7 @@ import java.util.List;
 /**
  * Created by nmesk on 6/19/2016.
  */
-public class Event {
+public class Event implements Serializable {
 
     int ID;
     String eventName;
@@ -21,13 +23,24 @@ public class Event {
     List<String> triggerIDs;
 
     //Insert new event
-    public Event(Database myDB, String eventName, Date startTime, Date endTime, List<String> resultingActionIDs, List<String> triggerIDs) {
+    public Event(Database myDB, String eventName) {
+
+        Event tempEvent = null;
+        try {
+            tempEvent = Event.Find(eventName, myDB);
+        } catch (Exception ex) {
+            //OK if it fails, it should
+        }
+        if (tempEvent != null) {
+            throw new IllegalArgumentException("That event already exists.");
+        }
+
         //insert new event into DB
         this.eventName = eventName;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.resultingActionIDs = resultingActionIDs;
-        this.triggerIDs = triggerIDs;
+        this.startTime = new Date();
+        this.endTime = new Date();
+        this.resultingActionIDs = new ArrayList<>();
+        this.triggerIDs = new ArrayList<>();
 
         this.ID = InsertEvent(myDB, eventName, this.startTime, this.endTime, resultingActionIDs, triggerIDs);
     }
@@ -62,7 +75,7 @@ public class Event {
         Cursor results = GetEvent(myDB, eventName);
 
         if (results.getCount() < 1) {
-            throw new Exception("No events found with name: " + eventName);
+            throw new IllegalArgumentException("No events found with name: " + eventName);
         }
 
         results.moveToFirst();
@@ -90,6 +103,61 @@ public class Event {
 
         myDB.ExecuteSql(sql);
         return id;
+    }
+
+    public void AddResultingAction(Database myDB, ResultingAction.RA_TYPE raType, String action) {
+        //if(resultingActionIDs.contains(resultingActionID)){throw new IllegalArgumentException("This event already contains that resulting action.");}
+
+        ResultingAction myAction = new ResultingAction(myDB, raType, action);
+
+        resultingActionIDs.add(String.valueOf(myAction.ID));
+
+        String resultingActs = TextUtils.join("|", resultingActionIDs);
+
+        String sql = String.format("UPDATE %S SET %s = %s WHERE %s == %d", Database.TABLE_NAME.EVENTS.name(), Database.COLUMN.EVENTS_RESULTING_ACTION_IDS.name(), resultingActs, Database.COLUMN.ID.name(), this.ID);
+        myDB.ExecuteSql(sql);
+    }
+
+    public void RemoveResultingAction(Database myDB, String resultingActionID) {
+        if (!resultingActionIDs.contains(resultingActionID)) {
+            throw new IllegalArgumentException("This event does not contain that resulting action.");
+        }
+
+        //remove it from the database
+        ResultingAction action = ResultingAction.Find(myDB, resultingActionID);
+        action.Remove(myDB);
+
+        resultingActionIDs.remove(resultingActionID);
+        String resultingActs = TextUtils.join("|", resultingActionIDs);
+
+        String sql = String.format("UPDATE %S SET %s = %s WHERE %s == %d", Database.TABLE_NAME.EVENTS.name(), Database.COLUMN.EVENTS_RESULTING_ACTION_IDS.name(), resultingActs, Database.COLUMN.ID.name(), this.ID);
+        myDB.ExecuteSql(sql);
+    }
+
+    public void AddTrigger(Database myDB, Trigger.TRIGGER_TYPE type, String triggerInfo) {
+        //if(triggerIDs.contains(triggerID)){throw new IllegalArgumentException("Trigger already exists for this event.");}
+        Trigger myTrigger = new Trigger(myDB, type, triggerInfo);
+
+        triggerIDs.add(String.valueOf(myTrigger.ID));
+
+        String trigs = TextUtils.join("|", triggerIDs);
+        String sql = String.format("UPDATE %S SET %s = %s WHERE %s == %d", Database.TABLE_NAME.EVENTS.name(), Database.COLUMN.EVENTS_EVENT_TRIGGER_IDS.name(), trigs, Database.COLUMN.ID.name(), this.ID);
+        myDB.ExecuteSql(sql);
+    }
+
+    public void RemoveTrigger(Database myDB, String triggerID) {
+        if (!triggerIDs.contains(triggerID)) {
+            throw new IllegalArgumentException("Trigger doesn't exist for this event.");
+        }
+
+        Trigger myTrigger = Trigger.Find(myDB, triggerID);
+        myTrigger.Remove(myDB);
+
+        triggerIDs.remove(triggerID);
+
+        String trigs = TextUtils.join("|", triggerIDs);
+        String sql = String.format("UPDATE %S SET %s = %s WHERE %s == %d", Database.TABLE_NAME.EVENTS.name(), Database.COLUMN.EVENTS_EVENT_TRIGGER_IDS.name(), trigs, Database.COLUMN.ID.name(), this.ID);
+        myDB.ExecuteSql(sql);
     }
 
     private static Cursor GetEvent(Database myDB, String eventName) {

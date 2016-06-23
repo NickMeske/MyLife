@@ -27,11 +27,11 @@ public class ResultingAction {
 
     }
 
-    public static ResultingAction Find(Database myDB, int id) throws Exception {
+    public static ResultingAction Find(Database myDB, String id) {
         Cursor results = GetResultingAction(myDB, id);
 
         if (results.getCount() == 0) {
-            throw new Exception("Unable to find resulting action.");
+            throw new IllegalArgumentException("Unable to find resulting action.");
         }
 
         results.moveToFirst();
@@ -44,6 +44,11 @@ public class ResultingAction {
     }
 
 
+    public void Remove(Database myDB) {
+        String sql = String.format("DELETE FROM %S WHERE %s == %d", Database.TABLE_NAME.RESULTING_ACTIONS.name(), Database.COLUMN.ID.name(), this.ID);
+        myDB.ExecuteSql(sql);
+    }
+
     private int InsertResultingAction(Database myDB, ResultingAction.RA_TYPE type, String typeInfo) {
         int id = myDB.GetNextID(Database.TABLE_NAME.RESULTING_ACTIONS.name());
         String sql = String.format("INSERT INTO %S VALUES (%d, '%s', '%s')", Database.TABLE_NAME.RESULTING_ACTIONS.name(), id, type.name(), typeInfo);
@@ -51,7 +56,7 @@ public class ResultingAction {
         return id;
     }
 
-    private static Cursor GetResultingAction(Database myDB, int raID) {
+    private static Cursor GetResultingAction(Database myDB, String raID) {
         String sql = String.format("SELECT * FROM %S WHERE %s == %d", Database.TABLE_NAME.RESULTING_ACTIONS.name(), Database.COLUMN.ID.name(), raID);
         return myDB.Query(sql);
     }
