@@ -64,4 +64,8 @@ public class EventSetup extends AppCompatActivity {
         }
     }
 
+    public void AddTrigger(View view) {
+        Intent myIntent = new Intent(getApplicationContext(), TriggerSetup.class);
+        startActivity(myIntent);
+    }
 }

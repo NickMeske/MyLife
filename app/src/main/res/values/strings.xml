@@ -11,4 +11,6 @@
     <string name="extra_event_type">EVENT_TYPE</string>
     <string name="title_activity_bluetooth_connection_setup">BluetoothConnectionSetup</string>
     <string name="title_activity_location_event_setup">LocationEventSetup</string>
+    <string name="title_activity_bluetooth_trigger_setup">BluetoothTriggerSetup</string>
+    <string name="title_activity_trigger_setup">TriggerSetup</string>
 </resources>

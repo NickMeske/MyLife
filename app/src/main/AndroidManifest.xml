@@ -38,6 +38,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.justfortom.mylife.AddNewEvent" />
         </activity>
+        <activity
+            android:name=".TriggerSetup"
+            android:label="@string/title_activity_trigger_setup"
+            android:parentActivityName=".EventSetup"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.justfortom.mylife.EventSetup" />
+        </activity>
     </application>
 
 </manifest>

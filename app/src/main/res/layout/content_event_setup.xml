@@ -52,7 +52,8 @@
                 android:layout_height="wrap_content"
                 android:text="Add New Trigger"
                 android:id="@+id/btnAddTrigger"
-                android:layout_below="@id/listTriggers" />
+                android:layout_below="@id/listTriggers"
+                android:onClick="AddTrigger" />
 
             <Space
                 android:layout_width="match_parent"
