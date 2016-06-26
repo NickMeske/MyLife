@@ -5,6 +5,7 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -71,24 +72,80 @@ public class Event implements Serializable {
         return events;
     }
 
-    public static Event Find(String eventName, Database myDB) throws Exception {
+    public static Event Find(String eventName, Database myDB) {
         Cursor results = GetEvent(myDB, eventName);
 
         if (results.getCount() < 1) {
             throw new IllegalArgumentException("No events found with name: " + eventName);
         }
 
+        Date start;
+        Date end;
+        try {
+            start = AndroidHelper.DateFormat().parse(results.getString(2));
+            end = AndroidHelper.DateFormat().parse(results.getString(3));
+        } catch (ParseException ex) {
+            start = new Date();
+            end = new Date();
+        }
+
         results.moveToFirst();
         Event tempEvent = new Event();
         tempEvent.ID = results.getInt(0);
         tempEvent.eventName = results.getString(1);
-        tempEvent.startTime = AndroidHelper.DateFormat().parse(results.getString(2));
-        tempEvent.endTime = AndroidHelper.DateFormat().parse(results.getString(3));
+        tempEvent.startTime = start;
+        tempEvent.endTime = end;
         tempEvent.resultingActionIDs = Arrays.asList(results.getString(4).split("|"));
 
         return tempEvent;
     }
 
+    public static void FindEventsFromTrigger(Database myDB, int triggerID, List<String> eventIDs) {
+        String sql = String.format("SELECT * FROM %S WHERE %s like '%%s%'", Database.TABLE_NAME.EVENTS.name(), Database.COLUMN.EVENTS_EVENT_TRIGGER_IDS.name(), triggerID);
+        Cursor results = myDB.Query(sql);
+
+        if (results.getCount() < 1) {
+            return;
+        }
+        results.moveToFirst();
+        while (!results.isAfterLast()) {
+            String id = String.valueOf(results.getInt(0));
+
+            if (!eventIDs.contains(id)) {
+                eventIDs.add(id);
+            }
+            results.moveToNext();
+        }
+    }
+
+    public static Event Find(int eventID, Database myDB) {
+        Cursor results = GetEvent(myDB, eventID);
+
+        if (results.getCount() < 1) {
+            throw new IllegalArgumentException("No events found with id: " + eventID);
+        }
+
+        Date start = null;
+        Date end = null;
+        try {
+            start = AndroidHelper.DateFormat().parse(results.getString(2));
+            end = AndroidHelper.DateFormat().parse(results.getString(3));
+        } catch (ParseException ex) {
+            start = new Date();
+            end = new Date();
+        }
+
+        results.moveToFirst();
+        Event tempEvent = new Event();
+        tempEvent.ID = results.getInt(0);
+        tempEvent.eventName = results.getString(1);
+        tempEvent.startTime = start;
+        tempEvent.endTime = end;
+        tempEvent.resultingActionIDs = Arrays.asList(results.getString(4).split("|"));
+
+        return tempEvent;
+
+    }
 
     private int InsertEvent(Database myDB, String eventName, Date startTime, Date endTime, List<String> resultingIDs, List<String> triggerIDs) {
 
@@ -164,6 +221,13 @@ public class Event implements Serializable {
         String sql = String.format("SELECT * FROM %S WHERE %s = '%s'", Database.TABLE_NAME.EVENTS.name(), Database.COLUMN.EVENTS_EVENT_NAME, eventName);
         return myDB.Query(sql);
     }
+
+    private static Cursor GetEvent(Database myDB, int eventID) {
+        String sql = String.format("SELECT * FROM %S WHERE %s == %d", Database.TABLE_NAME.EVENTS.name(), Database.COLUMN.ID.name(), eventID);
+        return myDB.Query(sql);
+    }
+
+
 
     private static Cursor GetEvents(Database myDB) {
         String sql = String.format("SELECT * FROM %S", Database.TABLE_NAME.EVENTS.name());

@@ -1,6 +1,11 @@
 package com.justfortom.mylife;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.provider.SyncStateContract;
@@ -21,6 +26,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -43,13 +49,12 @@ public class MainActivity extends AppCompatActivity {
             //schema probably already exists
         }
 
-//        Event myEvent = new Event(db, )
-
         //add options to home screen
         ArrayList<String> options = new ArrayList<>();
         options.add(getString(R.string.main_menu_item_add_new_event));
         options.add(getString(R.string.main_menu_item_reset_events));
         options.add(getString(R.string.main_menu_item_rate_app));
+        options.add(getString(R.string.main_menu_item_start_watching));
 
         final ListView myList = (ListView) findViewById(R.id.mainMenuOptions);
         AndroidHelper.AddItemsToList(this, myList, options);
@@ -68,11 +73,14 @@ public class MainActivity extends AppCompatActivity {
                 } else if (entry.equals(getString(R.string.main_menu_item_reset_events))) {
 
                     db.DeleteAll(Database.TABLE_NAME.EVENTS);
+                    db.DeleteAll(Database.TABLE_NAME.RESULTING_ACTIONS);
+                    db.DeleteAll(Database.TABLE_NAME.EVENT_TRIGGERS);
+                } else if (entry.equals(getString(R.string.main_menu_item_start_watching))) {
+                    StartWatchingForEvents();
                 }
                 Toast.makeText(MainActivity.this, entry, Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     @Override
@@ -97,13 +105,104 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    public void Stop(View view) {
-//        starterThing.StopListening();
-//    }
-//
-//    public void Start(View view) {
-//        starterThing.StartListening();
-//    }
+    private void StartWatchingForEvents() {
+        //watch for bluetooth connections
+        StartListening();
 
 
+        //watch for location movements
+    }
+
+    public void StartListening() {
+        IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+//        IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+        IntentFilter filter3 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+
+
+        try {
+            this.registerReceiver(mReceiver, filter1);
+//            this.registerReceiver(mReceiver, filter2);
+            this.registerReceiver(mReceiver, filter3);
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+            String exString = ex.toString();
+            String ex2 = ex.getMessage();
+        }
+
+    }
+
+    public void StopListening() {
+        this.unregisterReceiver(mReceiver);
+    }
+
+    //The BroadcastReceiver that listens for bluetooth broadcasts
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+
+//            PackageManager packageManager = getPackageManager();
+//            Intent openInten = new Intent(Intent.CATEGORY_APP_MUSIC);
+
+//            List activities = packageManager.queryIntentActivities(openInten,
+//                    PackageManager.MATCH_ALL);
+//            boolean isIntentSafe = activities.size() > 0;
+
+//            if (device.getName().toLowerCase().contains("ihome")) {
+
+            String deviceName = device.getName();
+
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                //Device found
+            } else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+                //Device is now connected
+                //search triggers for Bluetooth devices where it has this device
+                Database myDB = new Database(getApplicationContext());
+
+                try {
+                    //find triggers
+                    List<Trigger> triggers = Trigger.Find(myDB, Trigger.TRIGGER_TYPE.BLUETOOTH, deviceName);
+
+                    //find events from those triggers
+                    List<String> eventIDs = new ArrayList<>();
+                    for (Trigger tempTrigger : triggers) {
+                        Event.FindEventsFromTrigger(myDB, tempTrigger.ID, eventIDs);
+                    }
+
+                    //find resulting actions
+                    List<String> raIDs = new ArrayList<>();
+                    for (String id : eventIDs) {
+                        Event tempEvent = Event.Find(id, myDB);
+
+                        for (String raID : tempEvent.resultingActionIDs) {
+                            if (!raIDs.contains(raID)) {
+                                raIDs.add(raID);
+                            }
+                        }
+                    }
+
+                    for (String resultingAction : raIDs) {
+                        ResultingAction ra = ResultingAction.Find(myDB, resultingAction);
+                        Toast.makeText(MainActivity.this, "Found RA: " + ra, Toast.LENGTH_SHORT).show();
+                    }
+
+
+                } catch (IllegalArgumentException ex) {
+                    Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
+                }
+
+
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                //Done searching
+            } else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
+                //Device is about to disconnect
+            } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
+                //Device has disconnected
+            }
+//            }
+        }
+    };
 }
